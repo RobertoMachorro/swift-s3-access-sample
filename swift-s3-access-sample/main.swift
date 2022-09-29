@@ -6,6 +6,19 @@
 //
 
 import Foundation
+import SotoCore
+import SotoS3
 
-print("Hello, World!")
+let env = ProcessInfo.processInfo.environment
+guard let accessKey = env["STORAGE_KEY"],
+	  let accessSecret = env["STORAGE_SECRET"],
+	  let storageEndpoint = env["STORAGE_ENDPOINT"],
+	  let bucketName = env["STORAGE_BUCKET"],
+	  let testFile = env["TEST_FILE"] else {
+	print("Please specify configuration.")
+	exit(-1)
+}
 
+let client = AWSClient(credentialProvider: .static(accessKeyId: accessKey, secretAccessKey: accessSecret), httpClientProvider: .createNew)
+//let s3 = S3(client: client, region: .useast1) // AWS S3
+let s3 = S3(client: client, endpoint: storageEndpoint) // MinIO
