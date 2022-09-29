@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E90DAD0328E6420300D633F8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90DAD0228E6420300D633F8 /* main.swift */; };
+		E90DAD0B28E645A400D633F8 /* SotoS3 in Frameworks */ = {isa = PBXBuildFile; productRef = E90DAD0A28E645A400D633F8 /* SotoS3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E90DAD0B28E645A400D633F8 /* SotoS3 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +80,9 @@
 			dependencies = (
 			);
 			name = "swift-s3-access-sample";
+			packageProductDependencies = (
+				E90DAD0A28E645A400D633F8 /* SotoS3 */,
+			);
 			productName = "swift-s3-access-sample";
 			productReference = E90DACFF28E6420300D633F8 /* swift-s3-access-sample */;
 			productType = "com.apple.product-type.tool";
@@ -106,6 +111,9 @@
 				Base,
 			);
 			mainGroup = E90DACF628E6420300D633F8;
+			packageReferences = (
+				E90DAD0928E645A400D633F8 /* XCRemoteSwiftPackageReference "soto" */,
+			);
 			productRefGroup = E90DAD0028E6420300D633F8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -280,6 +288,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E90DAD0928E645A400D633F8 /* XCRemoteSwiftPackageReference "soto" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/soto-project/soto";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E90DAD0A28E645A400D633F8 /* SotoS3 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E90DAD0928E645A400D633F8 /* XCRemoteSwiftPackageReference "soto" */;
+			productName = SotoS3;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E90DACF728E6420300D633F8 /* Project object */;
 }
