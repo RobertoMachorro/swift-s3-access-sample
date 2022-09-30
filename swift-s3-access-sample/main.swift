@@ -32,14 +32,19 @@ if let nameHash = testFile.data(using: .utf8),
    let fileData = try? Data(contentsOf: fileUrl) {
 	let sha = SHA256.hash(data: nameHash).hexDigest()
 	let fileName = "\(sha).\(fileExtension)"
-
+	
 	let putRequest = S3.PutObjectRequest(body: .data(fileData), bucket: bucketName, key: fileName)
 	if let object = try? s3.putObject(putRequest).wait() {
-		print("Stored as \(fileName) \(object.checksumSHA256 ?? "X").")
+		print("Stored as \(fileName) \(object.eTag ?? "X").")
 	}
-
+	
 	let getRequest = S3.GetObjectRequest(bucket: bucketName, key: fileName)
 	if let object = try? s3.getObject(getRequest).wait() {
 		print("Info: \(object.contentType ?? "") \(object.contentLength ?? 0)")
+	}
+	
+	let deleteRequest = S3.DeleteObjectRequest(bucket: bucketName, key: fileName)
+	if let _ = try? s3.deleteObject(deleteRequest).wait() {
+		print("\(fileName) removed.")
 	}
 }
