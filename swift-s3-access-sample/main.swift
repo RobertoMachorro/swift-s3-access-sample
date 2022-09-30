@@ -28,8 +28,18 @@ let s3 = S3(client: client, endpoint: storageEndpoint) // MinIO
 let fileUrl = URL(fileURLWithPath: testFile)
 let fileExtension = fileUrl.pathExtension
 
-if let nameHash = testFile.data(using: .utf8) {
-	let sha = SHA256.hash(data: nameHash)
+if let nameHash = testFile.data(using: .utf8),
+   let fileData = try? Data(contentsOf: fileUrl) {
+	let sha = SHA256.hash(data: nameHash).hexDigest()
 	let fileName = "\(sha).\(fileExtension)"
-	print("File: \(fileName)")
+
+	let putRequest = S3.PutObjectRequest(body: .data(fileData), bucket: bucketName, key: fileName)
+	if let object = try? s3.putObject(putRequest).wait() {
+		print("Stored as \(fileName) \(object.checksumSHA256 ?? "X").")
+	}
+
+	let getRequest = S3.GetObjectRequest(bucket: bucketName, key: fileName)
+	if let object = try? s3.getObject(getRequest).wait() {
+		print("Info: \(object.contentType ?? "") \(object.contentLength ?? 0)")
+	}
 }
