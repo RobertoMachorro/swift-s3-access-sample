@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E90DAD0328E6420300D633F8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90DAD0228E6420300D633F8 /* main.swift */; };
 		E90DAD0B28E645A400D633F8 /* SotoS3 in Frameworks */ = {isa = PBXBuildFile; productRef = E90DAD0A28E645A400D633F8 /* SotoS3 */; };
+		E90DAD1228E6680700D633F8 /* Crypto in Frameworks */ = {isa = PBXBuildFile; productRef = E90DAD1128E6680700D633F8 /* Crypto */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +35,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E90DAD0B28E645A400D633F8 /* SotoS3 in Frameworks */,
+				E90DAD1228E6680700D633F8 /* Crypto in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +84,7 @@
 			name = "swift-s3-access-sample";
 			packageProductDependencies = (
 				E90DAD0A28E645A400D633F8 /* SotoS3 */,
+				E90DAD1128E6680700D633F8 /* Crypto */,
 			);
 			productName = "swift-s3-access-sample";
 			productReference = E90DACFF28E6420300D633F8 /* swift-s3-access-sample */;
@@ -113,6 +116,7 @@
 			mainGroup = E90DACF628E6420300D633F8;
 			packageReferences = (
 				E90DAD0928E645A400D633F8 /* XCRemoteSwiftPackageReference "soto" */,
+				E90DAD1028E6680700D633F8 /* XCRemoteSwiftPackageReference "swift-crypto" */,
 			);
 			productRefGroup = E90DAD0028E6420300D633F8 /* Products */;
 			projectDirPath = "";
@@ -298,6 +302,14 @@
 				minimumVersion = 6.0.0;
 			};
 		};
+		E90DAD1028E6680700D633F8 /* XCRemoteSwiftPackageReference "swift-crypto" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-crypto.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -305,6 +317,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E90DAD0928E645A400D633F8 /* XCRemoteSwiftPackageReference "soto" */;
 			productName = SotoS3;
+		};
+		E90DAD1128E6680700D633F8 /* Crypto */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E90DAD1028E6680700D633F8 /* XCRemoteSwiftPackageReference "swift-crypto" */;
+			productName = Crypto;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
