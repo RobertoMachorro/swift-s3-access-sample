@@ -7,7 +7,6 @@
 
 import Foundation
 import Crypto
-
 import SotoCore
 import SotoS3
 
@@ -21,30 +20,31 @@ guard let accessKey = env["STORAGE_KEY"],
 	exit(-1)
 }
 
+let fileUrl = URL(fileURLWithPath: testFile)
+let fileExtension = fileUrl.pathExtension
+guard let nameHash = testFile.data(using: .utf8),
+   let fileData = try? Data(contentsOf: fileUrl) else {
+	print("Failed to load file or hash file path.")
+	exit(-2)
+}
+
 let client = AWSClient(credentialProvider: .static(accessKeyId: accessKey, secretAccessKey: accessSecret), httpClientProvider: .createNew)
 //let s3 = S3(client: client, region: .useast1) // AWS S3
 let s3 = S3(client: client, endpoint: storageEndpoint) // MinIO
 
-let fileUrl = URL(fileURLWithPath: testFile)
-let fileExtension = fileUrl.pathExtension
+let fileName = SHA256.hash(data: nameHash).hexDigest() + "." + fileExtension
 
-if let nameHash = testFile.data(using: .utf8),
-   let fileData = try? Data(contentsOf: fileUrl) {
-	let sha = SHA256.hash(data: nameHash).hexDigest()
-	let fileName = "\(sha).\(fileExtension)"
-	
-	let putRequest = S3.PutObjectRequest(body: .data(fileData), bucket: bucketName, key: fileName)
-	if let object = try? s3.putObject(putRequest).wait() {
-		print("Stored as \(fileName) \(object.eTag ?? "X").")
-	}
-	
-	let getRequest = S3.GetObjectRequest(bucket: bucketName, key: fileName)
-	if let object = try? s3.getObject(getRequest).wait() {
-		print("Info: \(object.contentType ?? "") \(object.contentLength ?? 0)")
-	}
-	
-	let deleteRequest = S3.DeleteObjectRequest(bucket: bucketName, key: fileName)
-	if let _ = try? s3.deleteObject(deleteRequest).wait() {
-		print("\(fileName) removed.")
-	}
+let putRequest = S3.PutObjectRequest(body: .data(fileData), bucket: bucketName, key: fileName)
+if let object = try? s3.putObject(putRequest).wait() {
+	print("Stored as \(fileName) \(object.eTag ?? "X").")
+}
+
+let getRequest = S3.GetObjectRequest(bucket: bucketName, key: fileName)
+if let object = try? s3.getObject(getRequest).wait() {
+	print("Info: \(object.contentType ?? "") \(object.contentLength ?? 0)")
+}
+
+let deleteRequest = S3.DeleteObjectRequest(bucket: bucketName, key: fileName)
+if let _ = try? s3.deleteObject(deleteRequest).wait() {
+	print("\(fileName) removed.")
 }
