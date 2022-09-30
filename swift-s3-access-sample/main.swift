@@ -27,24 +27,26 @@ guard let nameHash = testFile.data(using: .utf8),
 	print("Failed to load file or hash file path.")
 	exit(-2)
 }
+let fileName = SHA256.hash(data: nameHash).hexDigest() + "." + fileExtension
+
+// S3 Operations Start Here
 
 let client = AWSClient(credentialProvider: .static(accessKeyId: accessKey, secretAccessKey: accessSecret), httpClientProvider: .createNew)
 //let s3 = S3(client: client, region: .useast1) // AWS S3
 let s3 = S3(client: client, endpoint: storageEndpoint) // MinIO
 
-let fileName = SHA256.hash(data: nameHash).hexDigest() + "." + fileExtension
-
-let putRequest = S3.PutObjectRequest(body: .data(fileData), bucket: bucketName, key: fileName)
-if let object = try? s3.putObject(putRequest).wait() {
-	print("Stored as \(fileName) \(object.eTag ?? "X").")
-}
-
-let getRequest = S3.GetObjectRequest(bucket: bucketName, key: fileName)
-if let object = try? s3.getObject(getRequest).wait() {
-	print("Info: \(object.contentType ?? "") \(object.contentLength ?? 0)")
-}
-
-let deleteRequest = S3.DeleteObjectRequest(bucket: bucketName, key: fileName)
-if let _ = try? s3.deleteObject(deleteRequest).wait() {
+do {
+	let putRequest = S3.PutObjectRequest(body: .data(fileData), bucket: bucketName, key: fileName)
+	let putResult = try await s3.putObject(putRequest).get()
+	print("Stored as \(fileName) \(putResult.eTag ?? "X").")
+	
+	let getRequest = S3.GetObjectRequest(bucket: bucketName, key: fileName)
+	let getResult = try await s3.getObject(getRequest).get()
+	print("Info: \(getResult.contentType ?? "") \(getResult.contentLength ?? 0)")
+	
+	let deleteRequest = S3.DeleteObjectRequest(bucket: bucketName, key: fileName)
+	let _ = try await s3.deleteObject(deleteRequest).get()
 	print("\(fileName) removed.")
+} catch {
+	print("ERROR: \(error)")
 }
